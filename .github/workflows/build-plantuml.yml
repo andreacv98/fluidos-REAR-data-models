@@ -17,23 +17,31 @@ jobs:
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
 
-      - name: Run script
+      - name: Generate PlantUML
+        run: /
+          cd scripts/
+          bash /generate_puml.sh ./models/schemas/
+          bash /generate_puml.sh ./models/examples/
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install Python dependencies
         run: |
-          cd models/schemas/
-          bash ./generate_puml.sh  
-          cd ../examples
-          bash ./generate_puml.sh
-          # Add any additional commands your script might need (e.g., install dependencies)
+          python -m pip install --upgrade pip
+          pip install -r scripts/requirements.txt
 
       - name: Generate SVG
         run: |
-          cd models/
-          python3 generate_svg.py ${{ steps.extract_branch.outputs.branch }}
+          cd scripts/
+          bash /generate_svg.sh ./puml
 
       - name: Generate Docs
         run: | 
-          cd docs
-          python3 generate_docs.py 
+          cd scripts/
+          bash /generate_docs.py ./models/schemas/ ./svg/models/schemas/ ./svg/models/examples/
 
       - name: Check for changes
         id: git-check

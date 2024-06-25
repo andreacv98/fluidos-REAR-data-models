@@ -10,111 +10,114 @@ Therefore, we suggest to use tools like ChatGPT or Gemini, providing the JSON sc
 ```
 In the following we represent some examples of JSON, you can find the original JSON schemas [here](models/schemas).
 
-# Flavor
-![0](models/examples/svg/flavor.svg)
-- **FlavorID**. The unique identifier for a flavor ['string']
-- **ProviderID**. The unique identifier for a provider ['string']
-- **Timestamp**. Timestamp of the provided Flavor offer. It allows to advertise Flavors in the (near) future ['string']
-- **Location**:
-  - **Latitude**. Latitude of the location ['string']
-  - **Longitude**. Longitude of the location ['string']
-  - **Altitude**. Altitude of the location expressed in meters ['string']
-  - **AdditionalNotes**. Additional notes about the location ['string']
-- **NetworkPropertyType**. Type of network property ensured by the privider (e.g., 5G, Wifi, Ethernet) ['string']
-- **FlavorType**. A reference to a specific flavor type schema using JSON references ($ref) to external files like 'k8slice.json', 'vm.json', etc. This allows defining details specific to each flavor type.
-- **Price**:
-  - **Amount**. Amount of the price. ['string']
-  - **Currency**. Currency of the price. ['string']
-  - **Period**. Period of the price. ['string']
-- **Owner**:
-  - **Domain**. Domain of the node. ['string']
-  - **NodeID**. ID of the node. ['string']
-  - **IP**. IP of the node. ['string']
+## Contract
+
+![Example SVG](svg/models/examples/contract.svg)
+
+[Show schema SVG](svg/models/schemas/contract.svg)
+
+  - **ContractID**. The contract ID [string]
+  - **Flavor**. The flavor of the contract [Reference: #flavor]
+  - **Buyer**. The buyer of the contract [Reference: #node-identity]
+  - **Seller**. The seller of the contract [Reference: #node-identity]
+  - **ExpirationTime**. The expiration time of the contract [string]
+  - **Credentials**.  [Reference: #liqo-credentials]
+
+## Configuration
+
+![Example SVG](svg/models/examples/configuration.svg)
+
+[Show schema SVG](svg/models/schemas/configuration.svg)
+
+  - **type**. The type of the configuration [string]
+  - **data**. The configuration data
+### Configuration types
+- [K8slice-configuration](docs/configuration-types/k8slice-configuration.md)
+
+## Node-identity
+
+![Example SVG](svg/models/examples/node-identity.svg)
+
+[Show schema SVG](svg/models/schemas/node-identity.svg)
+
+  - **Domain**. Domain of the node. [string]
+  - **NodeID**. ID of the node. [string]
+  - **IP**. IP of the node. [string]
   - **AdditionalInformation**:
-    - **LiqoID**. Liqo ID of the node. ['string']
-- **OptionalFields**:
-  - **Availability**. Availability flag of the Flavor. ['boolean']
-  - **WorkerID**. ID of the worker that provides the Flavor. ['string']
-- **AdditionalInfo**. Additional information to enrich the Flavor description using a key: value representation. ['string']
+    - **LiqoID**. Liqo ID of the node. [string]
 
-# FlavorType
-The FlavorType describes the actual flavor that is adverised.
+## Purchase-request
 
-## k8slice
-![1](models/examples/svg/flavor-types/k8slice.svg)
-- **Characteristics**:
-  - **CPU**. The number of CPU cores ['integer']
-  - **Pods**. The number of pods ['integer']
-  - **Memory**. The amount of memory ['integer']
-  - **GPU**:
-    - **GPUModel**. The model of the GPU offered for the specific Flavor. ['string']
-    - **GPUCores**. The number of GPU cores advertised by the Flavor. ['integer']
-  - **Storage**. The amount of storage ['integer']
-- **Properties**:
-  - **Latency**. The latency of the Flavor. ['integer']
-  - **SecurityStandards**. Security standards supported by the Flavor (e.g., GDPR). ['array']
-  - **CarbonFootprint**:
-    - **Embodied**. Embodied carbon of the node hardware normalized by its expected lifetime. ['integer']
-    - **Operational**. Forecasted average carbon intensity of the node for the next N windows/hours. ['array']
-- **Policy**:
-  - **Aggregatable**:
-    - **MinCount**. Minimum required number of instances of the Flavor. ['integer']
-    - **MaxCount**. Maximum required number of instances of the Flavor. ['integer']
-  - **Partitionable**:
-    - **CpuMin**. Minimum required number of CPU cores of the Flavor. ['integer']
-    - **MemoryMin**. Minimum required amount of RAM of the Flavor. ['integer']
-    - **CpuStep**. Incremental value of CPU cores of the Flavor. ['integer']
-    - **MemoryStep**. Incremental value of RAM of the Flavor. ['integer']
+![Example SVG](svg/models/examples/purchase-request.svg)
 
-## service
-![2](models/examples/svg/flavor-types/service.svg)
-- **Characteristics**:
-  - **Name**. Name of the flavor. ['string']
-  - **Description**. Description of the flavor. ['string']
-  - **Tags**. Tags associated with the flavor. ['array']
-  - **Plan**. Plan of the flavor. ['string']
-  - **Latency**. The latency of the Flavor. ['integer']
-  - **SecurityStandards**. Security standards supported by the Flavor (e.g., GDPR). ['array']
-- **ServiceType**. ServiceType to describe the specific characteristics of the advertised flavor.
+[Show schema SVG](svg/models/schemas/purchase-request.svg)
 
-## vm
-![3](models/examples/svg/flavor-types/vm.svg)
-- **Characteristics**:
-  - **Architecture**. Architecture of the Flavor. ['string']
-  - **OS**. The Operating System of the advertised VM ['string']
-  - **CPU**. Number of CPU cores of the Flavor. ['integer']
-  - **Memory**. Amount of RAM of the Flavor. ['integer']
-  - **GPU**:
-    - **GPUModel**. The model of the GPU offered for the specific Flavor. ['string']
-    - **GPUCores**. The number of GPU cores advertised by the Flavor. ['integer']
-  - **Storage**. The amount of storage ['integer']
-- **Properties**:
-  - **Latency**. The latency of the Flavor. ['integer']
-  - **SecurityStandards**. Security standards supported by the Flavor (e.g., GDPR). ['array']
-  - **CarbonFootprint**:
-    - **Embodied**. Embodied carbon of the node hardware normalized by its expected lifetime. ['integer']
-    - **Operational**. Forecasted average carbon intensity of the node for the next N windows/hours. ['array']
-- **Policy**:
-  - **Aggregatable**:
-    - **MinCount**. Minimum required number of instances of the Flavor. ['integer']
-    - **MaxCount**. Maximum required number of instances of the Flavor. ['integer']
+  - **LiqoCredentials**.  [Reference: #liqo-credentials]
 
-## sensor
-![4](models/examples/svg/flavor-types/sensor.svg)
-- **Characteristics**:
-  - **SensorType**. The type of sensor ['string']
-  - **SensorModel**. The model of sensor ['string']
-  - **SensorManufacturer**. The manufacturer of sensor ['string']
-  - **SensorMarket**. The market of sensor ['string']
-  - **SamplingRate**. The sampling rate of the sensor in milliseconds ['integer']
-  - **Accuracy**. The accuracy reported for the measurements (unit percentage) ['integer']
-  - **Consumption**. The power consumption of the reported sensor (unit mW) ['integer']
-  - **Interface**. Not clear what that means. ['string']
-  - **SecurityStandards**. Security standards supported by the Flavor (e.g., GDPR). ['array']
-  - **Latency**. The latency of the Flavor. ['integer']
-  - **additionalProperties**:
-    - **MeasurementUnit**. The unit of measure for the measurements ['string']
-    - **ConsumptionUnit**. The unit of measure for the sensor power consumption ['string']
-    - **SamplingRateUnit**. The unit of measure for the sampling rate ['string']
-    - **AccessProtocol**. Not sure what that means ['string']
-- **AccessType**. The access type of the sensor. Currently, HTTP and MQTT are supported.
+## Reservation
+
+![Example SVG](svg/models/examples/reservation.svg)
+
+[Show schema SVG](svg/models/schemas/reservation.svg)
+
+  - **FlavorID**. The unique identifier of the flavor to be reserved [string]
+  - **Buyer**.  [Reference: #node-identity]
+  - **Configuration**. The configuration of the flavour to reserve [Reference: #configuration]
+
+## Flavor
+
+![Example SVG](svg/models/examples/flavor.svg)
+
+[Show schema SVG](svg/models/schemas/flavor.svg)
+
+  - **flavorId**. The unique identifier for a flavor [string]
+  - **providerId**. The unique identifier for a provider [string]
+  - **timestamp**. Timestamp of the provided Flavor offer. It allows to advertise Flavors in the (near) future [string]
+  - **location**:
+    - **latitude**. Latitude of the location [string]
+    - **longitude**. Longitude of the location [string]
+    - **country**. Country of the location [string]
+    - **city**. City of the location [string]
+    - **additionalNotes**. Additional notes about the location [string]
+  - **networkPropertyType**. Type of network property ensured by the provider (e.g., 5G, Wifi, Ethernet) [string]
+  - **type**:
+    - **name**. The name of the type of the Flavor. [string]
+    - **data**. A reference to a specific flavor type schema using JSON references ($ref) to external files like 'k8slice.json', 'vm.json', etc. This allows defining details specific to each flavor type.
+  - **price**:
+    - **amount**. Amount of the price. [string]
+    - **currency**. Currency of the price. [string]
+    - **period**. Period of the price. [string]
+  - **owner**:
+    - **domain**. Domain of the node. [string]
+    - **nodeId**. ID of the node. [string]
+    - **ip**. IP of the node. [string]
+    - **additionalInformation**:
+      - **LiqoID**. Liqo ID of the node. [string]
+  - **availability**. Availability flag of the Flavor. [boolean]
+### Flavor types
+- [K8slice](docs/flavor-types/k8slice.md)
+- [Sensor](docs/flavor-types/sensor.md)
+- [Vm](docs/flavor-types/vm.md)
+- [Service](docs/flavor-types/service.md)
+
+## Transaction
+
+![Example SVG](svg/models/examples/transaction.svg)
+
+[Show schema SVG](svg/models/schemas/transaction.svg)
+
+  - **TransactionID**. The unique identifier for the transaction [string]
+  - **FlavorID**. The unique identifier for the flavor reserved [string]
+  - **Buyer**. The node identity of the buyer that is reserverving the flavor [Reference: #node-identity]
+  - **ExpirationTime**. The expiration time of the transaction [string]
+
+## Liqo-credentials
+
+![Example SVG](svg/models/examples/credentials/liqo-credentials.svg)
+
+[Show schema SVG](svg/models/schemas/credentials/liqo-credentials.svg)
+
+  - **clusterID**. The unique identifier of the cluster [string]
+  - **clusterName**. The name of the cluster [string]
+  - **endpoint**. The endpoint of the cluster [string]
+  - **token**. The token to be used for the peering [string]
